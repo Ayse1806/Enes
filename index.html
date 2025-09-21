@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Sürpriz!</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #ffe6eb;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+
+  #message {
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    font-size: 50px;
+    font-weight: bold;
+    color: black;
+  }
+
+  #specialMessage {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    font-size: 40px;
+    color: black;
+  }
+
+  #cakeContainer {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%, -50%);
+  }
+
+  #cakeBalloon {
+    position: absolute;
+    top: 30%;
+    left: 110%; /* pastanın sağından başlar */
+    background-color: #fff;
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 15px 20px;
+    border-radius: 20px;
+    border: 3px solid #ff69b4;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  }
+
+  #balloonArrow {
+    position: absolute;
+    top: 50%;
+    left: -20px; /* balonun solunda, pastaya işaret ediyor */
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 20px solid #fff;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="message">İYİ Kİ DOĞDUUUNN 🥳🥳🥳</div>
+<div id="specialMessage">Doğum günün kutlu olsun karşim 🙃🎉 <br>Ha bir de atölyenin aq 😂</div>
+
+<div id="cakeContainer">
+  <img src="pasta.png" id="cake" width="500" height="500">
+  <div id="cakeBalloon">
+    🎂 Pastana dokun,şarkın çalsın! 🎂
+    <div id="balloonArrow"></div>
+  </div>
+</div>
+
+<canvas id="confettiCanvas"></canvas>
+
+<audio id="birthdaySong" loop>
+  <source src="dogum_gunu.wav" type="audio/wav">
+</audio>
+
+<script>
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// --- Konfeti Ayarları ---
+const confettiColors = ['#ff00ff','#00ffff','#0000ff','#00ff00','#ffcc00','#ff0066']; 
+const NUM_CONFETTI = 100; 
+const confettiPieces = [];
+
+for(let i=0; i<NUM_CONFETTI; i++){
+  confettiPieces.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height - canvas.height,
+    width: 5 + Math.random()*5,
+    height: 10 + Math.random()*10,
+    color: confettiColors[Math.floor(Math.random()*confettiColors.length)],
+    speed: 0.5 + Math.random()*1.5
+  });
+}
+
+// --- Konfeti Animasyonu ---
+function updateConfetti(){
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  confettiPieces.forEach(c => {
+    ctx.fillStyle = c.color;
+    ctx.fillRect(c.x, c.y, c.width, c.height);
+    c.y += c.speed;
+    if(c.y > canvas.height){
+      c.x = Math.random()*canvas.width;
+      c.y = Math.random()*-canvas.height;
+    }
+  });
+  requestAnimationFrame(updateConfetti);
+}
+
+// --- Başlat ---
+updateConfetti();
+
+// --- Müzik ---
+const audio = document.getElementById('birthdaySong');
+
+// Kullanıcı sayfayı tıkladığında veya dokunduğunda çal
+function startAudio() {
+    audio.play();
+    window.removeEventListener('click', startAudio);
+    window.removeEventListener('touchstart', startAudio);
+}
+
+window.addEventListener('click', startAudio);
+window.addEventListener('touchstart', startAudio);
+</script>
+
+</body>
+</html>
